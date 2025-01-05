@@ -1,101 +1,158 @@
-import Image from "next/image";
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Banner } from '@/components/Banner';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { ExternalLinkModal } from '@/components/ExternalLinkModal';
+
+type User = {
+  userID: number;
+  username: string;
+  contactNumber: string;
+  email: string;
+  password: string;
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [userData, setUserData] = useState<User | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isExternalLinkModalOpen, setIsExternalLinkModalOpen] = useState(false);
+  const userId =
+    typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const feedbackFormUrl =
+    'https://docs.google.com/forms/d/e/1FAIpQLSf-zm78bwkY1w1y3uhTAKhYXh4uf1Kep96KjGJc2LUe7Wmxlg/viewform?usp=header';
+
+  useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    async function fetchUser() {
+      try {
+        const response = await fetch(
+          `http://localhost:5101/api/user/${userId}`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const data = await response.json();
+        setUserData(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUser();
+  }, [userId]);
+
+  const handleFeedbackClick = () => {
+    setIsExternalLinkModalOpen(true);
+  };
+
+  const handleExternalLinkConfirm = () => {
+    setIsExternalLinkModalOpen(false);
+    window.open(feedbackFormUrl, '_blank');
+  };
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen text-red-500">
+        Error: {error}
+      </div>
+    );
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      <Banner />
+
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 gap-12">
+          <section className="space-y-6">
+            <h1 className="text-4xl font-bold text-blue-800">
+              {userData
+                ? `Welcome, ${userData.username}!`
+                : 'Welcome to Our Mental Health Companion'}
+            </h1>
+            <p className="text-xl text-gray-700">
+              Your well-being is our priority. Our Mental Health Assistant is
+              here to provide you with accurate and comprehensive information,
+              resources, and support on your journey toward better mental
+              health.
+            </p>
+            <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
+              <h2 className="text-2xl font-semibold text-blue-700">
+                Explore Our Features
+              </h2>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                <li>
+                  Optimized language model to provide accurate answers to your
+                  questions
+                </li>
+                <li>Extensive library with 12 categories</li>
+                <li>Information on over 50 mental health disorders</li>
+              </ul>
+            </div>
+          </section>
+
+          <div className="space-y-4">
+            <div className="relative h-[400px] rounded-lg overflow-hidden shadow-xl">
+              <Image
+                src="/0395_638157039388692529.avif?height=1000&width=600"
+                alt="Mental Health Support"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-lg"
+              />
+            </div>
+            <p className="text-center text-sm text-gray-600 italic">
+              Image from
+              https://www.hrreporter.com/focus-areas/wellness-mental-health/are-employers-failing-when-it-comes-to-mental-health-support/374775
+            </p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <section className="mt-12 bg-white rounded-lg shadow-md p-8">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-700">
+            We value your input!
+          </h2>
+          <p className="text-gray-700 mb-6">
+            Feel free to provide your feedback and let us know if there are any
+            additional mental health disorders you'd like to see included in our
+            system. Your suggestions help us continually improve and better
+            serve your needs.
+          </p>
+          <div className="text-center">
+            <Button
+              variant="secondary"
+              className="bg-blue-600 text-white hover:bg-blue-700 transition duration-300"
+              onClick={handleFeedbackClick}
+            >
+              Provide Feedback
+            </Button>
+          </div>
+        </section>
+      </div>
+
+      <ExternalLinkModal
+        isOpen={isExternalLinkModalOpen}
+        onClose={() => setIsExternalLinkModalOpen(false)}
+        onConfirm={handleExternalLinkConfirm}
+        linkUrl={feedbackFormUrl}
+      />
+    </main>
   );
 }
