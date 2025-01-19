@@ -1,5 +1,12 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : library/page.tsx
+// Description      : The frontend of library page
+// First Written on : 4-Dec-2024
+// Edited on        : 30-Dec-2024
+
+// Import necessary libraries and components
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Banner } from '@/components/Banner';
@@ -21,6 +28,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, BookOpen, Filter } from 'lucide-react';
 
+// Type definition for the library data structure
 type LibraryData = {
   libraryID: number;
   topic: string;
@@ -30,6 +38,7 @@ type LibraryData = {
   url: string;
 };
 
+// List of predefined categories for filtering library items
 const categories = [
   'All Categories',
   'Anxiety Disorders',
@@ -47,6 +56,7 @@ const categories = [
 ];
 
 export default function LibraryPage() {
+  // State the variables
   const [libraryData, setLibraryData] = useState<LibraryData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -54,6 +64,7 @@ export default function LibraryPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Fetch library data when the page is loaded
   useEffect(() => {
     async function fetchLibraries() {
       try {
@@ -62,7 +73,7 @@ export default function LibraryPage() {
           throw new Error('Failed to fetch library');
         }
         const data = await response.json();
-        setLibraryData(data);
+        setLibraryData(data); // Store fetched data in state
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -77,6 +88,7 @@ export default function LibraryPage() {
     fetchLibraries();
   }, []);
 
+  // Filter the data based on search term and selected category
   const filteredData = libraryData.filter(
     (item) =>
       (item.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -87,14 +99,17 @@ export default function LibraryPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      {/* Display the banner */}
       <Banner />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
+          {/* Header with title and icon */}
           <h1 className="text-3xl font-bold text-blue-800 mb-6 flex items-center">
             <BookOpen className="mr-2" />
             Mental Health Library
           </h1>
 
+          {/* Search and filter options */}
           <div className="mb-6 flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-grow">
               <label
@@ -112,6 +127,7 @@ export default function LibraryPage() {
                 className="w-full"
               />
             </div>
+            {/* Toggle button for filters */}
             <div className="w-full md:w-auto">
               <Button
                 onClick={() => setShowFilters(!showFilters)}
@@ -124,6 +140,7 @@ export default function LibraryPage() {
             </div>
           </div>
 
+          {/* Filter options (visible if showFilters is true) */}
           {showFilters && (
             <div className="mb-6">
               <label
@@ -150,11 +167,14 @@ export default function LibraryPage() {
             </div>
           )}
 
+          {/* Content area: Show loader, error message, or filtered data */}
           {loading ? (
+            // Loading spinner
             <div className="flex justify-center items-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
             </div>
           ) : error ? (
+            // Error message
             <div className="text-center text-red-500 py-8">
               <p>Error: {error}</p>
               <Button onClick={() => window.location.reload()} className="mt-4">
@@ -163,6 +183,7 @@ export default function LibraryPage() {
             </div>
           ) : (
             <>
+              {/* Display filtered data as cards */}
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredData.map((item) => (
                   <Link
@@ -186,6 +207,7 @@ export default function LibraryPage() {
                   </Link>
                 ))}
               </div>
+              {/* No results message */}
               {filteredData.length === 0 && (
                 <p className="text-center text-gray-500 py-8">
                   No results found.

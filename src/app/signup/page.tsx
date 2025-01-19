@@ -1,15 +1,32 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : signup/page.tsx
+// Description      : The frontend of sign up page
+// First Written on : 4-Dec-2024
+// Edited on        : 28-Dec-2024
+
+// Import necessary libraries and components
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Banner } from '@/components/Banner';
-import { AlertCircle, CheckCircle2, User, Phone, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertCircle,
+  CheckCircle2,
+  User,
+  Phone,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function SignUp() {
+  // State the variables
   const [username, setUsername] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +37,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Validate form inputs before submission
   const validateForm = () => {
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -44,15 +62,18 @@ export default function SignUp() {
     return true;
   };
 
+  // Handle form submission for sign-up
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
+    // Validate input fields
     if (!validateForm()) return;
 
     setLoading(true);
 
+    // Prepare user data to send to the backend
     const userDto = {
       username,
       contactNumber: parseInt(contactNumber, 10),
@@ -91,12 +112,14 @@ export default function SignUp() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      {/* Display the banner */}
       <Banner />
       <div className="max-w-4xl mx-auto p-4">
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">
             Create an Account
           </h1>
+          {/* Error message alert */}
           {error && (
             <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
@@ -104,16 +127,26 @@ export default function SignUp() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+          {/* Success message alert */}
           {success && (
-            <Alert variant="default" className="mb-6 bg-green-50 text-green-800 border-green-300">
+            <Alert
+              variant="default"
+              className="mb-6 bg-green-50 text-green-800 border-green-300"
+            >
               <CheckCircle2 className="h-4 w-4" />
               <AlertTitle>Success</AlertTitle>
               <AlertDescription>{success}</AlertDescription>
             </Alert>
           )}
+          {/* Sign-up form */}
           <form onSubmit={handleSignUp} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-medium text-gray-700">Username</Label>
+              <Label
+                htmlFor="username"
+                className="text-sm font-medium text-gray-700"
+              >
+                Username
+              </Label>
               <div className="relative">
                 <Input
                   id="username"
@@ -123,11 +156,19 @@ export default function SignUp() {
                   required
                   className="pl-10"
                 />
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <User
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contactNumber" className="text-sm font-medium text-gray-700">Contact Number</Label>
+              <Label
+                htmlFor="contactNumber"
+                className="text-sm font-medium text-gray-700"
+              >
+                Contact Number
+              </Label>
               <div className="relative">
                 <Input
                   id="contactNumber"
@@ -138,11 +179,19 @@ export default function SignUp() {
                   required
                   className="pl-10"
                 />
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Phone
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email (Gmail)</Label>
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
+                Email (Gmail)
+              </Label>
               <div className="relative">
                 <Input
                   id="email"
@@ -153,22 +202,33 @@ export default function SignUp() {
                   required
                   className="pl-10"
                 />
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Mail
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
+                Password
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="********"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="pl-10 pr-10"
                 />
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -179,24 +239,35 @@ export default function SignUp() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirm Password</Label>
+              <Label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="********"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   className="pl-10"
                 />
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
               </div>
             </div>
+            {/* Submit button */}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing Up...' : 'Sign Up'}
             </Button>
           </form>
+
+          {/* Navigation to sign-in page */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">Already have an account?</p>
             <Link href="/signin" className="text-blue-600 hover:underline">
@@ -208,4 +279,3 @@ export default function SignUp() {
     </main>
   );
 }
-

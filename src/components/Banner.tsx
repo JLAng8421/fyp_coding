@@ -1,5 +1,12 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : Banner.tsx
+// Description      : The frontend of the banner
+// First Written on : 4-Dec-2024
+// Edited on        : 24-Dec-2024
+
+// Import necessary libraries and components
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -20,8 +27,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useAuth } from '@/app/contexts/AuthContext';
 
+// Type definition for the User object
 type User = {
   userID: number;
   username: string;
@@ -31,20 +38,24 @@ type User = {
 };
 
 export function Banner() {
+  // State the variables
   const [userData, setuserData] = useState<User | null>(null);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
-  const { user, signOut } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();  // Get the current route path
-
   const [error, setError] = useState('');
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Router and current pathname for navigation and routing
+  const router = useRouter();
+  const pathname = usePathname(); // Get the current route path
+
+  // Retrieve user ID from local storage
   const userId = localStorage.getItem('userId');
 
+  // Fetch user data when the page is loaded
   useEffect(() => {
     if (!userId) {
       setLoading(false);
-      return; // No user, skip fetching data
+      return; // If no user ID, skip the fetch process
     }
 
     async function fetchUser() {
@@ -76,9 +87,9 @@ export function Banner() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Function to handle user sign-out
   const handleSignOut = () => {
     localStorage.setItem('userId', '');
-    signOut();
     setIsSignOutDialogOpen(false);
     router.push('/');
 
@@ -89,13 +100,16 @@ export function Banner() {
   };
 
   return (
-    <nav className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md mb-8">
+    <nav className="flex justify-between items-center bg-white p-4 rounded-lg 
+    shadow-md mb-8">
+      {/* Main title */}
       <Link href="/">
         <h1 className="text-2xl font-bold text-blue-800">
           Mental Health Support System
         </h1>
       </Link>
       <div className="space-x-4">
+        {/* Navigation links */}
         <Link href="/ai_assistant">
           <Button variant="outline">Ask AI Assistant</Button>
         </Link>
@@ -123,6 +137,7 @@ export function Banner() {
         )}
       </div>
 
+      {/* Alert dialog for sign-out confirmation */}
       <AlertDialog
         open={isSignOutDialogOpen}
         onOpenChange={setIsSignOutDialogOpen}

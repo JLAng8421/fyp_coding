@@ -1,5 +1,12 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : profile/page.tsx
+// Description      : The frontend of profile page
+// First Written on : 4-Dec-2024
+// Edited on        : 26-Dec-2024
+
+// Import necessary libraries and components
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +21,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 
+// Type definition for the User object
 type User = {
   userID: number;
   username: string;
@@ -23,12 +31,12 @@ type User = {
 };
 
 export default function Profile() {
+  // State the variables
   const [userData, setUserData] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState<boolean>(true);
-  const userId = localStorage.getItem('userId');
   const [username, setUsername] = useState<string>(userData?.username || '');
   const [contactNumber, setContactNumber] = useState<string>(
     userData?.contactNumber || ''
@@ -36,6 +44,10 @@ export default function Profile() {
   const [email, setEmail] = useState<string>(userData?.email || '');
   const [password, setPassword] = useState<string>(''); // Add password state
 
+  // Fetch user ID from local storage
+  const userId = localStorage.getItem('userId');
+
+  // Fetch user data when the page is loaded
   useEffect(() => {
     if (!userId) {
       setLoading(false);
@@ -69,13 +81,15 @@ export default function Profile() {
     fetchUser();
   }, [userId]);
 
+  // Function to handle profile updates
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Input validation
       if (username.length < 3) {
         throw new Error('Username must be at least 3 characters long');
       }
-      if (!/^\d{10}$/.test(contactNumber)) {
+      if (!/^\d{9}$/.test(contactNumber)) {
         throw new Error('Contact number must be 10 digits');
       }
       if (!email.includes('@') || !email.includes('.')) {
@@ -114,13 +128,17 @@ export default function Profile() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Function to handle the modal close button click
   const closeButton = async (e: React.FormEvent) => {
     window.location.reload(); // Refresh the page
   };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      <Banner username={userData?.username} />
+      {/* Display the banner */}
+      <Banner />
+
+      {/* Profile form container */}
       <div className="max-w-4xl mx-auto">
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-blue-800 mb-6 text-center">
@@ -179,6 +197,7 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* Modal for displaying update messages */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

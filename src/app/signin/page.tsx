@@ -1,5 +1,12 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : signin/page.tsx
+// Description      : The frontend of sign in page
+// First Written on : 4-Dec-2024
+// Edited on        : 1-Jun-2025
+
+// Import necessary libraries and components
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -16,6 +23,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 
+// Type definition for the User object
 type User = {
   userID: number;
   username: string;
@@ -25,6 +33,7 @@ type User = {
 };
 
 export default function SignIn() {
+  // State the variables
   const [userData, setuserData] = useState<User[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,6 +43,7 @@ export default function SignIn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Fetch user data when the page is loaded
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -60,6 +70,7 @@ export default function SignIn() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Function to handle the sign-in logic
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -70,7 +81,6 @@ export default function SignIn() {
     if (user) {
       // Check if the password matches
       if (user.password === password) {
-        // Assuming signIn manages the authentication logic
         try {
           localStorage.setItem('userId', String(user.userID));
           router.push('/'); // Redirect to home page or dashboard after successful sign-in
@@ -94,12 +104,14 @@ export default function SignIn() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      {/* Display the banner */}
       <Banner />
       <div className="max-w-4xl mx-auto">
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-blue-800 mb-6 text-center">
             Sign In
           </h1>
+          {/* Sign-in form */}
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <Label htmlFor="email">Email (Gmail)</Label>
@@ -127,6 +139,7 @@ export default function SignIn() {
               Sign In
             </Button>
           </form>
+          {/* Link to sign-up page */}
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">Don't have an account?</p>
             <Link href="/signup">
@@ -136,6 +149,7 @@ export default function SignIn() {
         </div>
       </div>
 
+      {/* Dialog for error messages */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -1,11 +1,19 @@
 'use client';
 
+// Programmer Name  : Ang Jia Liang TP068299
+// Program Name     : page.tsx
+// Description      : The frontend of main page
+// First Written on : 4-Dec-2024
+// Edited on        : 2-Jun-2025
+
+// Import necessary libraries and components
 import { Button } from '@/components/ui/button';
 import { Banner } from '@/components/Banner';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ExternalLinkModal } from '@/components/ExternalLinkModal';
 
+// Type definition for the User object
 type User = {
   userID: number;
   username: string;
@@ -15,17 +23,23 @@ type User = {
 };
 
 export default function Home() {
+  // State the variables
   const [userData, setUserData] = useState<User | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState<boolean>(true);
   const [isExternalLinkModalOpen, setIsExternalLinkModalOpen] = useState(false);
+
+  // Retrieve user ID from local storage
   const userId =
     typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
 
+  // Google Form link for user feedback
   const feedbackFormUrl =
     'https://docs.google.com/forms/d/e/1FAIpQLSf-zm78bwkY1w1y3uhTAKhYXh4uf1Kep96KjGJc2LUe7Wmxlg/viewform?usp=header';
 
+  // Fetch user data when the page is loaded
   useEffect(() => {
+    // skip fetch if no user ID
     if (!userId) {
       setLoading(false);
       return;
@@ -53,21 +67,26 @@ export default function Home() {
     fetchUser();
   }, [userId]);
 
+  // Handle feedback button click
   const handleFeedbackClick = () => {
     setIsExternalLinkModalOpen(true);
   };
 
+  // Handle external link confirmation
   const handleExternalLinkConfirm = () => {
     setIsExternalLinkModalOpen(false);
     window.open(feedbackFormUrl, '_blank');
   };
 
+  // Show loading message if data is still being fetched
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
         Loading...
       </div>
     );
+
+  // Show error message if data fetching failed
   if (error)
     return (
       <div className="flex justify-center items-center h-screen text-red-500">
@@ -77,10 +96,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+      {/* Display the banner */}
       <Banner />
-
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 gap-12">
+          {/* Welcome section with dynamic user greeting */}
           <section className="space-y-6">
             <h1 className="text-4xl font-bold text-blue-800">
               {userData
@@ -108,6 +128,7 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Image section */}
           <div className="space-y-4">
             <div className="relative h-[400px] rounded-lg overflow-hidden shadow-xl">
               <Image
@@ -125,6 +146,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Feedback section */}
         <section className="mt-12 bg-white rounded-lg shadow-md p-8">
           <h2 className="text-2xl font-semibold mb-4 text-blue-700">
             We value your input!
@@ -147,6 +169,7 @@ export default function Home() {
         </section>
       </div>
 
+      {/* External link confirmation box for feedback */}
       <ExternalLinkModal
         isOpen={isExternalLinkModalOpen}
         onClose={() => setIsExternalLinkModalOpen(false)}
